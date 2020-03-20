@@ -13,7 +13,7 @@ import React, {
   useRef,
   useState
 } from "react";
-import ParagraphView from "./ParagraphView";
+import ReactNodeView from "./ReactNodeView";
 
 const Prosemirror: React.FC<{
   defaultValue: any;
@@ -41,11 +41,16 @@ const Prosemirror: React.FC<{
         state,
         nodeViews: {
           paragraph(node, view, getPos, decorations) {
-            const paragraphView = new ParagraphView(node, Paragraph);
-            const rendered = paragraphView.render(portal => {
-              setPortal(portal);
-            });
-            return rendered;
+            const paragraphView = new ReactNodeView(
+              node,
+              view,
+              getPos,
+              decorations,
+              Paragraph
+            );
+            const { nodeView, portal } = paragraphView.init();
+            setPortal(portal);
+            return nodeView;
           }
         },
         dispatchTransaction(transaction) {

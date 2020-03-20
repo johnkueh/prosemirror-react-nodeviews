@@ -32,61 +32,61 @@ const initialValue = {
       attrs: { level: 5 },
       content: [{ type: "text", text: "Heading five" }]
     },
-    {
-      type: "paragraph",
-      content: [
-        {
-          type: "text",
-          text: "A normal block of a paragraph of text"
-        }
-      ]
-    },
     // {
     //   type: "paragraph",
     //   content: [
     //     {
     //       type: "text",
-    //       text: "A block of paragraphed text with "
-    //     },
-    //     {
-    //       type: "text",
-    //       text: "bold",
-    //       marks: [{ type: "strong" }]
-    //     },
-    //     {
-    //       type: "text",
-    //       text: " and "
-    //     },
-    //     {
-    //       type: "text",
-    //       text: "italics",
-    //       marks: [{ type: "em" }]
-    //     },
-    //     {
-    //       type: "text",
-    //       text: ", "
-    //     },
-    //     {
-    //       type: "text",
-    //       text: "inline code",
-    //       marks: [{ type: "code" }]
-    //     },
-    //     {
-    //       type: "text",
-    //       text: ", and "
-    //     },
-    //     {
-    //       type: "text",
-    //       text: "a link",
-    //       marks: [
-    //         {
-    //           type: "link",
-    //           attrs: { href: "https://www.google.com", title: "Google" }
-    //         }
-    //       ]
+    //       text: "A normal block of a paragraph of text"
     //     }
     //   ]
     // },
+    {
+      type: "paragraph",
+      content: [
+        {
+          type: "text",
+          text: "A block of paragraphed text with "
+        },
+        {
+          type: "text",
+          text: "bold",
+          marks: [{ type: "strong" }]
+        },
+        {
+          type: "text",
+          text: " and "
+        },
+        {
+          type: "text",
+          text: "italics",
+          marks: [{ type: "em" }]
+        },
+        {
+          type: "text",
+          text: ", "
+        },
+        {
+          type: "text",
+          text: "inline code",
+          marks: [{ type: "code" }]
+        },
+        {
+          type: "text",
+          text: ", and "
+        },
+        {
+          type: "text",
+          text: "a link",
+          marks: [
+            {
+              type: "link",
+              attrs: { href: "https://www.google.com", title: "Google" }
+            }
+          ]
+        }
+      ]
+    },
     { type: "horizontal_rule" },
     { type: "blockquote", content: [{ type: "text", text: "A blockquote" }] },
     { type: "code_block", content: [{ type: "text", text: "A code block" }] },
