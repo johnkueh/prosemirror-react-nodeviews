@@ -5,12 +5,21 @@ import { keymap } from "prosemirror-keymap";
 import { schema } from "prosemirror-schema-basic";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  ReactPortal,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
+import ParagraphView from "./ParagraphView";
 
 const Prosemirror: React.FC<{
   defaultValue: any;
   onChange: any;
 }> = ({ defaultValue, onChange }) => {
+  const [portal, setPortal] = useState<ReactPortal | null>(null);
   const editorViewRef = useRef(null);
   const handleChange = useCallback(onChange, []);
   const state = useMemo(() => {
@@ -30,6 +39,15 @@ const Prosemirror: React.FC<{
     if (editorView) {
       const view = new EditorView(editorView, {
         state,
+        nodeViews: {
+          paragraph(node, view, getPos, decorations) {
+            const paragraphView = new ParagraphView(node, Paragraph);
+            const rendered = paragraphView.render(portal => {
+              setPortal(portal);
+            });
+            return rendered;
+          }
+        },
         dispatchTransaction(transaction) {
           const newState = view.state.apply(transaction);
           handleChange(newState.doc.toJSON());
@@ -42,8 +60,15 @@ const Prosemirror: React.FC<{
   return (
     <Box rounded="md" borderColor="gray.100" borderWidth="1px" p={4}>
       <div ref={editorViewRef}></div>
+      {portal && portal}
     </Box>
   );
 };
+
+const Paragraph = React.forwardRef(({ children }, ref) => (
+  <Box ref={ref} bg="red.100" fontSize="lg">
+    {children}
+  </Box>
+));
 
 export default Prosemirror;
