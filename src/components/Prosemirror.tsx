@@ -70,10 +70,13 @@ const Prosemirror: React.FC<{
   );
 };
 
-const Paragraph = React.forwardRef(({ children }, ref) => (
-  <Box ref={ref} bg="red.100" fontSize="lg">
-    {children}
-  </Box>
-));
+const Paragraph = React.forwardRef(({ children, ...props }, ref) => {
+  console.log(props);
+  return (
+    <Box ref={ref} bg="red.100" fontSize="lg">
+      {children}
+    </Box>
+  );
+});
 
 export default Prosemirror;
