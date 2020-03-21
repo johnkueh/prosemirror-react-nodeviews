@@ -10,7 +10,7 @@ import Blockquote from "./Blockquote";
 import CodeBlock from "./CodeBlock";
 import Heading from "./Heading";
 import Paragraph from "./Paragraph";
-import ReactNodeView from "./ReactNodeView";
+import { createReactNodeView } from "./ReactNodeView";
 import ReactNodeViewPortalsProvider, {
   useReactNodeViewPortals
 } from "./ReactNodeViewPortals";
@@ -44,60 +44,50 @@ const ProseMirror: React.FC<Props> = ({ defaultValue, onChange }) => {
       ]
     });
   }, [defaultValue]);
-
-  useEffect(() => {
-    const editorView = editorViewRef.current;
-    if (editorView) {
-      const view = new EditorView(editorView, {
+  const createEditorView = useCallback(
+    editorViewDOM => {
+      const view = new EditorView(editorViewDOM, {
         state,
         nodeViews: {
           blockquote(node, view, getPos, decorations) {
-            const reactNodeView = new ReactNodeView(
+            return createReactNodeView({
               node,
               view,
               getPos,
               decorations,
-              Blockquote
-            );
-            const { nodeView, portal } = reactNodeView.init();
-            handleCreatePortal(portal);
-            return nodeView;
+              component: Blockquote,
+              onCreatePortal: handleCreatePortal
+            });
           },
           heading(node, view, getPos, decorations) {
-            const reactNodeView = new ReactNodeView(
+            return createReactNodeView({
               node,
               view,
               getPos,
               decorations,
-              Heading
-            );
-            const { nodeView, portal } = reactNodeView.init();
-            handleCreatePortal(portal);
-            return nodeView;
+              component: Heading,
+              onCreatePortal: handleCreatePortal
+            });
           },
           paragraph(node, view, getPos, decorations) {
-            const reactNodeView = new ReactNodeView(
+            return createReactNodeView({
               node,
               view,
               getPos,
               decorations,
-              Paragraph
-            );
-            const { nodeView, portal } = reactNodeView.init();
-            handleCreatePortal(portal);
-            return nodeView;
+              component: Paragraph,
+              onCreatePortal: handleCreatePortal
+            });
           },
           code_block(node, view, getPos, decorations) {
-            const reactNodeView = new ReactNodeView(
+            return createReactNodeView({
               node,
               view,
               getPos,
               decorations,
-              CodeBlock
-            );
-            const { nodeView, portal } = reactNodeView.init();
-            handleCreatePortal(portal);
-            return nodeView;
+              component: CodeBlock,
+              onCreatePortal: handleCreatePortal
+            });
           }
         },
         dispatchTransaction(transaction) {
@@ -106,8 +96,16 @@ const ProseMirror: React.FC<Props> = ({ defaultValue, onChange }) => {
           view.updateState(newState);
         }
       });
+    },
+    [state, handleChange, handleCreatePortal]
+  );
+
+  useEffect(() => {
+    const editorViewDOM = editorViewRef.current;
+    if (editorViewDOM) {
+      createEditorView(editorViewDOM);
     }
-  }, [state, handleChange, handleCreatePortal]);
+  }, [createEditorView]);
 
   return (
     <Box rounded="md" borderColor="gray.100" borderWidth="1px" p={4}>

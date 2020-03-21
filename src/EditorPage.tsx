@@ -1,8 +1,8 @@
 import { Box, Flex } from "@chakra-ui/core";
 import React, { useState } from "react";
-import Container from "./Container";
-import PrismRenderer from "./PrismRenderer";
-import Prosemirror from "./Prosemirror";
+import Container from "./components/Container";
+import PrismRenderer from "./components/PrismRenderer";
+import Prosemirror from "./components/Prosemirror";
 
 const initialValue = {
   type: "doc",

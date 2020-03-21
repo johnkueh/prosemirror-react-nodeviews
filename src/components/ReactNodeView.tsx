@@ -100,5 +100,30 @@ class ReactNodeView implements NodeView {
   }
 }
 
+interface TCreateReactNodeView extends IReactNodeViewContext {
+  component: React.FC<any>;
+  onCreatePortal: (portal: any) => void;
+}
+
+export const createReactNodeView = ({
+  node,
+  view,
+  getPos,
+  decorations,
+  component,
+  onCreatePortal
+}: TCreateReactNodeView) => {
+  const reactNodeView = new ReactNodeView(
+    node,
+    view,
+    getPos,
+    decorations,
+    component
+  );
+  const { nodeView, portal } = reactNodeView.init();
+  onCreatePortal(portal);
+
+  return nodeView;
+};
 export const useReactNodeView = () => useContext(ReactNodeViewContext);
 export default ReactNodeView;
