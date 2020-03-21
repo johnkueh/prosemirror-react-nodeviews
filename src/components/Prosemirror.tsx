@@ -9,6 +9,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import Blockquote from "./Blockquote";
 import CodeBlock from "./CodeBlock";
 import Heading from "./Heading";
+import Image from "./Image";
 import Paragraph from "./Paragraph";
 import { createReactNodeView } from "./ReactNodeView";
 import ReactNodeViewPortalsProvider, {
@@ -88,6 +89,17 @@ const ProseMirror: React.FC<Props> = ({ defaultValue, onChange }) => {
               component: CodeBlock,
               onCreatePortal: handleCreatePortal
             });
+          },
+          image(node, view, getPos, decorations) {
+            return createReactNodeView({
+              node,
+              view,
+              getPos,
+              decorations,
+              component: Image,
+              onCreatePortal: handleCreatePortal
+            });
+            // return new ImageView(node, view, getPos, decorations);
           }
         },
         dispatchTransaction(transaction) {

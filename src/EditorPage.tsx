@@ -2,7 +2,7 @@ import { Box, Flex } from "@chakra-ui/core";
 import React, { useState } from "react";
 import Container from "./components/Container";
 import PrismRenderer from "./components/PrismRenderer";
-import Prosemirror from "./components/Prosemirror";
+import ProseMirror from "./components/ProseMirror";
 
 const initialValue = {
   type: "doc",
@@ -108,7 +108,7 @@ const Page: React.FC = () => {
     <Container>
       <Flex py={12} justifyContent="space-around">
         <Box width="45%">
-          <Prosemirror defaultValue={initialValue} onChange={setValue} />
+          <ProseMirror defaultValue={initialValue} onChange={setValue} />
         </Box>
         <Box width="45%">
           <PrismRenderer

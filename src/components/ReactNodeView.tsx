@@ -49,10 +49,13 @@ class ReactNodeView implements NodeView {
 
   init() {
     this.dom = document.createElement("div");
-    this.contentDOM = document.createElement("div");
     this.dom.classList.add("ProseMirror__dom");
-    this.contentDOM.classList.add("ProseMirror__contentDOM");
-    this.dom.appendChild(this.contentDOM);
+
+    if (!this.node.isLeaf) {
+      this.contentDOM = document.createElement("div");
+      this.contentDOM.classList.add("ProseMirror__contentDOM");
+      this.dom.appendChild(this.contentDOM);
+    }
 
     return {
       nodeView: this,
@@ -67,7 +70,9 @@ class ReactNodeView implements NodeView {
       useEffect(() => {
         const componentDOM = componentRef.current;
         if (componentDOM != null && this.contentDOM != null) {
-          componentDOM.firstChild?.appendChild(this.contentDOM);
+          if (!this.node.isLeaf) {
+            componentDOM.firstChild?.appendChild(this.contentDOM);
+          }
         }
       }, [componentRef]);
 
