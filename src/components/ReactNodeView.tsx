@@ -7,7 +7,7 @@ import shortid from "shortid";
 interface IReactNodeViewContext {
   node: Node;
   view: EditorView;
-  getPos: TGetPos;
+  getPos: any;
   decorations: Decoration[];
 }
 
@@ -20,8 +20,6 @@ const ReactNodeViewContext = React.createContext<
   decorations: undefined
 });
 
-type TGetPos = boolean | (() => number);
-
 class ReactNodeView implements NodeView {
   componentRef: React.RefObject<HTMLDivElement>;
   dom?: HTMLElement;
@@ -29,13 +27,13 @@ class ReactNodeView implements NodeView {
   component: React.FC<any>;
   node: Node;
   view: EditorView;
-  getPos: TGetPos;
+  getPos: any;
   decorations: Decoration[];
 
   constructor(
     node: Node,
     view: EditorView,
-    getPos: TGetPos,
+    getPos: any,
     decorations: Decoration[],
     component: React.FC<any>
   ) {
@@ -95,22 +93,22 @@ class ReactNodeView implements NodeView {
     return ReactDOM.createPortal(<Component />, container, shortid.generate());
   }
 
-  update(node: Node) {
-    return true;
-  }
-
   destroy() {
     console.log("destroy");
     this.dom = undefined;
     this.contentDOM = undefined;
   }
 
-  selectNode() {
-    return false;
-  }
+  // update(node: Node) {
+  //   return this.node.isLeaf;
+  // }
 
+  // selectNode() {
+  //   return false;
+  // }
+
+  // https://discuss.prosemirror.net/t/draggable-and-nodeviews/955
   stopEvent(e: Event) {
-    console.log(e.type);
     return e.type === "mousedown" && !e.type.startsWith("drag");
   }
 

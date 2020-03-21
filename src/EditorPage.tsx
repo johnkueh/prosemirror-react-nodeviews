@@ -8,6 +8,15 @@ const initialValue = {
   type: "doc",
   content: [
     {
+      type: "image",
+      attrs: {
+        alt: "Toilet paper",
+        title: "Unsplash image of toilet paper",
+        src:
+          "https://images.unsplash.com/photo-1584556812952-905ffd0c611a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80"
+      }
+    },
+    {
       type: "heading",
       attrs: { level: 1 },
       content: [{ type: "text", text: "Heading one" }]
@@ -88,16 +97,7 @@ const initialValue = {
       ]
     },
     { type: "blockquote", content: [{ type: "text", text: "A blockquote" }] },
-    { type: "code_block", content: [{ type: "text", text: "A code block" }] },
-    {
-      type: "image",
-      attrs: {
-        alt: "Toilet paper",
-        title: "Unsplash image of toilet paper",
-        src:
-          "https://images.unsplash.com/photo-1584556812952-905ffd0c611a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80"
-      }
-    }
+    { type: "code_block", content: [{ type: "text", text: "A code block" }] }
   ]
 };
 

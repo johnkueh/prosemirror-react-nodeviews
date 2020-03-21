@@ -9,6 +9,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import Blockquote from "./Blockquote";
 import CodeBlock from "./CodeBlock";
 import Heading from "./Heading";
+// import ImageView from "./ImageView";
 import Image from "./Image";
 import Paragraph from "./Paragraph";
 import { createReactNodeView } from "./ReactNodeView";
@@ -99,7 +100,7 @@ const ProseMirror: React.FC<Props> = ({ defaultValue, onChange }) => {
               component: Image,
               onCreatePortal: handleCreatePortal
             });
-            // return new ImageView(node, view, getPos, decorations);
+            // return new ImageView(node, view, getPos);
           }
         },
         dispatchTransaction(transaction) {
