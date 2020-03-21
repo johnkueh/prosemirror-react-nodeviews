@@ -3,9 +3,9 @@ This is an example repo of how to use React FC components as NodeViews for Prose
 
 ![Screenshot](https://i.imgur.com/GIqLbJ8.png)
 
-Example usage:
+How to use:
 
-## Wrap your root component with `ReactNodeViewPortalsProvider`
+### Wrap your root component with `ReactNodeViewPortalsProvider`
 Lets use React portals to preserve your app context (css-in-js, data, etc) when the NodeViews are rendered. `ReactNodeViewPortalsProvider` is a convenient way to help you with this. 
 
 ```tsx
@@ -23,7 +23,7 @@ const App: React.FC<Props> = props => {
 export default App;
 ```
 
-## Loading ProseMirror with React components
+### Loading ProseMirror with React components
 This is how you initialize your ProseMirror editor
 
 ```tsx
@@ -98,7 +98,7 @@ const ProseMirror: React.FC<Props> = () => {
 export default ProseMirror;
 ```
 
-## Getting node props within your React components
+### Getting node props within your React components
 Each of the React components have been wrapped with a context provider before sending it through the portal, so its easy to access the nodeview's props:
 
 ```tsx
