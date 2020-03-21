@@ -110,11 +110,32 @@ import { useReactNodeView } from "./ReactNodeView";
 
 const HeadingBlock: React.FC = ({ children }) => {
   const context = useReactNodeView();
-  // node: Node; view: EditorView; getPos: () => number; decorations: Decorations[]
-  const { node, view, getPos, decorations } = context;
-  console.log(context);
-  return <Heading>{children}</Heading>;
+  const level = context.node?.attrs.level;
+  return <Heading fontSize={`${7 - level}xl`}>{children}</Heading>;
 };
 
 export default HeadingBlock;
+```
+
+```tsx
+import { Box, Image, Text } from "@chakra-ui/core";
+import React from "react";
+import { useReactNodeView } from "./ReactNodeView";
+
+const ImageBlock: React.FC = () => {
+  const context = useReactNodeView();
+  const attrs = context.node?.attrs;
+  return (
+    <Box>
+      <Image alt={attrs?.alt} src={attrs?.src} />
+      {attrs?.title && (
+        <Text mt={2} color="gray.500" textAlign="center" fontSize="xs">
+          {attrs.title}
+        </Text>
+      )}
+    </Box>
+  );
+};
+
+export default ImageBlock;
 ```
