@@ -1,44 +1,118 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# ProseMirror React NodeViews
+This is an example repo of how to use React FC components as NodeViews for ProseMirror
 
-## Available Scripts
+![Screenshot](https://i.imgur.com/GIqLbJ8.png)
 
-In the project directory, you can run:
+Example usage:
 
-### `yarn start`
+## Wrap your root component with `ReactNodeViewPortalsProvider`
+Lets use React portals to preserve your app context (css-in-js, data, etc) when the NodeViews are rendered. `ReactNodeViewPortalsProvider` is a convenient way to help you with this. 
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+```tsx
+import { createReactNodeView } from "./ReactNodeView";
+import ReactNodeViewPortalsProvider from "./ReactNodeViewPortals";
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+const App: React.FC<Props> = props => {
+  return (
+    <ReactNodeViewPortalsProvider>
+      <App {...props} />
+    </ReactNodeViewPortalsProvider>
+  );
+};
 
-### `yarn test`
+export default App;
+```
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Loading ProseMirror with React components
+This is how you initialize your ProseMirror editor
 
-### `yarn build`
+```tsx
+import React from 'react';
+import { useReactNodeViewPortals } from './ReactNodeViewPortals';
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+const ProseMirror: React.FC<Props> = () => {
+  const { createPortal } = useReactNodeViewPortals();
+  const editorViewRef = useRef(null);
+  
+  const handleCreatePortal = useCallback(createPortal, []);
+  const state = useMemo(() => {
+    const doc = schema.nodeFromJSON(YOUR_PROSEMIRROR_SCHEMA);
+    return EditorState.create({
+      doc,
+      plugins: [
+        history(),
+        keymap({ "Mod-z": undo, "Mod-y": redo }),
+        keymap(baseKeymap)
+      ]
+    });
+  }, []);
+  
+  const createEditorView = useCallback(
+    editorViewDOM => {
+      const view = new EditorView(editorViewDOM, {
+        state,
+        nodeViews: {
+          heading(node, view, getPos, decorations) {
+            return createReactNodeView({
+              node,
+              view,
+              getPos,
+              decorations,
+              component: Heading,
+              onCreatePortal: handleCreatePortal
+            });
+          },
+          paragraph(node, view, getPos, decorations) {
+            return createReactNodeView({
+              node,
+              view,
+              getPos,
+              decorations,
+              component: Paragraph,
+              onCreatePortal: handleCreatePortal
+            });
+          },
+        },
+        dispatchTransaction(transaction) {
+          const newState = view.state.apply(transaction);
+          handleChange(newState.doc.toJSON());
+          view.updateState(newState);
+        }
+      });
+    },
+    [state, handleChange, handleCreatePortal]
+  );
+  
+  useEffect(() => {
+    const editorViewDOM = editorViewRef.current;
+    if (editorViewDOM) {
+      createEditorView(editorViewDOM);
+    }
+  }, [createEditorView]);
+  
+  return (
+    <div ref={editorViewRef}></div>
+  );
+}
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+export default ProseMirror;
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Getting node props within your React components
+Each of the React components have been wrapped with a context provider before sending it through the portal, so its easy to access the nodeview's props:
 
-### `yarn eject`
+```tsx
+import { Heading } from "@chakra-ui/core";
+import React from "react";
+import { useReactNodeView } from "./ReactNodeView";
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+const HeadingBlock: React.FC = ({ children }) => {
+  const context = useReactNodeView();
+  // node: Node; view: EditorView; getPos: () => number; decorations: Decorations[]
+  const { node, view, getPos, decorations } = context;
+  console.log(context);
+  return <Heading>{children}</Heading>;
+};
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+export default HeadingBlock;
+```
