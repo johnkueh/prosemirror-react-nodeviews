@@ -105,8 +105,13 @@ class ReactNodeView implements NodeView {
     this.contentDOM = undefined;
   }
 
-  stopEvent() {
-    return true;
+  selectNode() {
+    return false;
+  }
+
+  stopEvent(e: Event) {
+    console.log(e.type);
+    return e.type === "mousedown" && !e.type.startsWith("drag");
   }
 
   ignoreMutation() {
