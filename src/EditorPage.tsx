@@ -96,8 +96,7 @@ const initialValue = {
         title: "Unsplash image of toilet paper",
         src:
           "https://images.unsplash.com/photo-1584556812952-905ffd0c611a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80"
-      },
-      content: [{ type: "text", text: "A code block" }]
+      }
     }
   ]
 };

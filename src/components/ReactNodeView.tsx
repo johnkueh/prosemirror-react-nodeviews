@@ -100,8 +100,17 @@ class ReactNodeView implements NodeView {
   }
 
   destroy() {
+    console.log("destroy");
     this.dom = undefined;
     this.contentDOM = undefined;
+  }
+
+  stopEvent() {
+    return true;
+  }
+
+  ignoreMutation() {
+    return true;
   }
 }
 
