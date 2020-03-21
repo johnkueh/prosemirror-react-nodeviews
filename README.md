@@ -2,7 +2,7 @@
 
 This is an example repo of how to use React FC components as NodeViews for ProseMirror
 
-![Screenshot](https://i.imgur.com/iRkNpJr.png)
+![Screenshot](./public/Screenshot.png)
 
 How to use:
 
