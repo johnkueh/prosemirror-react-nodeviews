@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/core";
 import React, { useState } from "react";
-import CodeBlock from "./CodeBlock";
 import Container from "./Container";
+import PrismRenderer from "./PrismRenderer";
 import Prosemirror from "./Prosemirror";
 
 const initialValue = {
@@ -87,7 +87,6 @@ const initialValue = {
         }
       ]
     },
-    { type: "horizontal_rule" },
     { type: "blockquote", content: [{ type: "text", text: "A blockquote" }] },
     { type: "code_block", content: [{ type: "text", text: "A code block" }] },
     {
@@ -112,7 +111,10 @@ const Page: React.FC = () => {
           <Prosemirror defaultValue={initialValue} onChange={setValue} />
         </Box>
         <Box width="45%">
-          <CodeBlock language="json" code={JSON.stringify(value, null, 2)} />
+          <PrismRenderer
+            language="json"
+            code={JSON.stringify(value, null, 2)}
+          />
         </Box>
       </Flex>
     </Container>

@@ -63,6 +63,7 @@ class ReactNodeView implements NodeView {
   renderPortal(container: HTMLElement) {
     const Component: React.FC = props => {
       const componentRef = useRef<HTMLDivElement>(null);
+
       useEffect(() => {
         const componentDOM = componentRef.current;
         if (componentDOM != null && this.contentDOM != null) {
