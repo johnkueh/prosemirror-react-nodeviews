@@ -1,12 +1,14 @@
 # ProseMirror React NodeViews
+
 This is an example repo of how to use React FC components as NodeViews for ProseMirror
 
-![Screenshot](https://i.imgur.com/GIqLbJ8.png)
+![Screenshot](https://i.imgur.com/iRkNpJr.png)
 
 How to use:
 
 ### Wrap your root component with `ReactNodeViewPortalsProvider`
-Lets use React portals to preserve your app context (css-in-js, data, etc) when the NodeViews are rendered. `ReactNodeViewPortalsProvider` is a convenient way to help you with this. 
+
+Lets use React portals to preserve your app context (css-in-js, data, etc) when the NodeViews are rendered. `ReactNodeViewPortalsProvider` is a convenient way to help you with this.
 
 ```tsx
 import { createReactNodeView } from "./ReactNodeView";
@@ -24,16 +26,17 @@ export default App;
 ```
 
 ### Loading ProseMirror with React components
+
 This is how you initialize your ProseMirror editor
 
 ```tsx
-import React from 'react';
-import { useReactNodeViewPortals } from './ReactNodeViewPortals';
+import React from "react";
+import { useReactNodeViewPortals } from "./ReactNodeViewPortals";
 
 const ProseMirror: React.FC<Props> = () => {
   const { createPortal } = useReactNodeViewPortals();
   const editorViewRef = useRef(null);
-  
+
   const handleCreatePortal = useCallback(createPortal, []);
   const state = useMemo(() => {
     const doc = schema.nodeFromJSON(YOUR_PROSEMIRROR_SCHEMA);
@@ -46,7 +49,7 @@ const ProseMirror: React.FC<Props> = () => {
       ]
     });
   }, []);
-  
+
   const createEditorView = useCallback(
     editorViewDOM => {
       const view = new EditorView(editorViewDOM, {
@@ -71,7 +74,7 @@ const ProseMirror: React.FC<Props> = () => {
               component: Paragraph,
               onCreatePortal: handleCreatePortal
             });
-          },
+          }
         },
         dispatchTransaction(transaction) {
           const newState = view.state.apply(transaction);
@@ -82,23 +85,22 @@ const ProseMirror: React.FC<Props> = () => {
     },
     [state, handleChange, handleCreatePortal]
   );
-  
+
   useEffect(() => {
     const editorViewDOM = editorViewRef.current;
     if (editorViewDOM) {
       createEditorView(editorViewDOM);
     }
   }, [createEditorView]);
-  
-  return (
-    <div ref={editorViewRef}></div>
-  );
-}
+
+  return <div ref={editorViewRef}></div>;
+};
 
 export default ProseMirror;
 ```
 
 ### Getting node props within your React components
+
 Each of the React components have been wrapped with a context provider before sending it through the portal, so its easy to access the nodeview's props:
 
 ```tsx

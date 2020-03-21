@@ -4,8 +4,8 @@ import { useReactNodeView } from "./ReactNodeView";
 
 const HeadingBlock: React.FC = ({ children }) => {
   const context = useReactNodeView();
-  console.log(context);
-  return <Heading>{children}</Heading>;
+  const level = context.node?.attrs.level;
+  return <Heading fontSize={`${7 - level}xl`}>{children}</Heading>;
 };
 
 export default HeadingBlock;
