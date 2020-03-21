@@ -5,23 +5,30 @@ import { keymap } from "prosemirror-keymap";
 import { schema } from "prosemirror-schema-basic";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import React, {
-  ReactPortal,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from "react";
-import ReactNodeView from "./ReactNodeView";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import ReactNodeView, { useReactNodeView } from "./ReactNodeView";
+import ReactNodeViewPortalsProvider, {
+  useReactNodeViewPortals
+} from "./ReactNodeViewPortals";
 
-const Prosemirror: React.FC<{
+interface Props {
   defaultValue: any;
   onChange: any;
-}> = ({ defaultValue, onChange }) => {
-  const [portal, setPortal] = useState<ReactPortal | null>(null);
+}
+
+const ProseMirrorWrapper: React.FC<Props> = props => {
+  return (
+    <ReactNodeViewPortalsProvider>
+      <ProseMirror {...props} />
+    </ReactNodeViewPortalsProvider>
+  );
+};
+
+const ProseMirror: React.FC<Props> = ({ defaultValue, onChange }) => {
+  const { createPortal } = useReactNodeViewPortals();
   const editorViewRef = useRef(null);
   const handleChange = useCallback(onChange, []);
+  const handleCreatePortal = useCallback(createPortal, []);
   const state = useMemo(() => {
     const doc = schema.nodeFromJSON(defaultValue);
     return EditorState.create({
@@ -49,7 +56,7 @@ const Prosemirror: React.FC<{
               Paragraph
             );
             const { nodeView, portal } = paragraphView.init();
-            setPortal(portal);
+            handleCreatePortal(portal);
             return nodeView;
           }
         },
@@ -60,23 +67,23 @@ const Prosemirror: React.FC<{
         }
       });
     }
-  }, [state, handleChange]);
+  }, [state, handleChange, handleCreatePortal]);
 
   return (
     <Box rounded="md" borderColor="gray.100" borderWidth="1px" p={4}>
       <div ref={editorViewRef}></div>
-      {portal && portal}
     </Box>
   );
 };
 
-const Paragraph = React.forwardRef(({ children, ...props }, ref) => {
-  console.log(props);
+const Paragraph: React.FC = ({ children }) => {
+  const context = useReactNodeView();
+  console.log(context);
   return (
-    <Box ref={ref} bg="red.100" fontSize="lg">
+    <Box bg="red.100" fontSize="lg">
       {children}
     </Box>
   );
-});
+};
 
-export default Prosemirror;
+export default ProseMirrorWrapper;

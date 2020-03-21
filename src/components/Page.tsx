@@ -32,15 +32,15 @@ const initialValue = {
       attrs: { level: 5 },
       content: [{ type: "text", text: "Heading five" }]
     },
-    // {
-    //   type: "paragraph",
-    //   content: [
-    //     {
-    //       type: "text",
-    //       text: "A normal block of a paragraph of text"
-    //     }
-    //   ]
-    // },
+    {
+      type: "paragraph",
+      content: [
+        {
+          type: "text",
+          text: "A normal block of a paragraph of text"
+        }
+      ]
+    },
     {
       type: "paragraph",
       content: [
