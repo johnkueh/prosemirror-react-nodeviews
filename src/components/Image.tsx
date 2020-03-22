@@ -1,4 +1,4 @@
-import { Box, Button, Image, Input } from "@chakra-ui/core";
+import { Box, Image, Input } from "@chakra-ui/core";
 import React, { useState } from "react";
 import { useReactNodeView } from "./ReactNodeView";
 
@@ -6,6 +6,7 @@ const ImageBlock: React.FC = () => {
   const context = useReactNodeView();
   const attrs = context.node?.attrs;
   const [title, setTitle] = useState(attrs?.title);
+  // console.log(context.node);
 
   return (
     <Box>
@@ -17,26 +18,22 @@ const ImageBlock: React.FC = () => {
         onChange={(e: any) => {
           setTitle(e.target.value);
         }}
-        mt={2}
-        color="gray.500"
-        textAlign="center"
-        fontSize="xs"
-      />
-      <Button
-        onClick={() => {
+        onBlur={() => {
           const { view, getPos } = context;
           if (view) {
             view.dispatch(
               view.state.tr.setNodeMarkup(getPos(), context.node?.type, {
-                src: attrs?.src,
+                ...attrs,
                 title
               })
             );
           }
         }}
-      >
-        Save
-      </Button>
+        mt={2}
+        color="gray.500"
+        textAlign="center"
+        fontSize="xs"
+      />
     </Box>
   );
 };

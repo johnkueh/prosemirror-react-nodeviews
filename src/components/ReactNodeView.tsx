@@ -23,8 +23,10 @@ const ReactNodeViewContext = React.createContext<
 class ReactNodeView implements NodeView {
   componentRef: React.RefObject<HTMLDivElement>;
   dom?: HTMLElement;
+  portal?: React.ReactPortal;
   contentDOM?: HTMLElement;
   component: React.FC<any>;
+  portalContext: PortalContext;
   node: Node;
   view: EditorView;
   getPos: any;
@@ -35,13 +37,15 @@ class ReactNodeView implements NodeView {
     view: EditorView,
     getPos: any,
     decorations: Decoration[],
-    component: React.FC<any>
+    component: React.FC<any>,
+    portalContext: PortalContext
   ) {
     this.node = node;
     this.view = view;
     this.getPos = getPos;
     this.decorations = decorations;
     this.component = component;
+    this.portalContext = portalContext;
     this.componentRef = React.createRef();
   }
 
@@ -55,9 +59,11 @@ class ReactNodeView implements NodeView {
       this.dom.appendChild(this.contentDOM);
     }
 
+    this.portal = this.renderPortal(this.dom);
+
     return {
       nodeView: this,
-      portal: this.renderPortal(this.dom)
+      portal: this.portal
     };
   }
 
@@ -94,7 +100,10 @@ class ReactNodeView implements NodeView {
   }
 
   destroy() {
-    console.log("destroy");
+    if (this.portal) {
+      const { destroyPortal } = this.portalContext;
+      destroyPortal(this.portal);
+    }
     this.dom = undefined;
     this.contentDOM = undefined;
   }
@@ -109,6 +118,7 @@ class ReactNodeView implements NodeView {
 
   // https://discuss.prosemirror.net/t/draggable-and-nodeviews/955
   stopEvent(e: Event) {
+    // console.log(e);
     return e.type === "mousedown" && !e.type.startsWith("drag");
   }
 
@@ -119,7 +129,12 @@ class ReactNodeView implements NodeView {
 
 interface TCreateReactNodeView extends IReactNodeViewContext {
   component: React.FC<any>;
-  onCreatePortal: (portal: any) => void;
+  portalContext: PortalContext;
+}
+
+interface PortalContext {
+  createPortal: (portal: React.ReactPortal) => void;
+  destroyPortal: (portal: React.ReactPortal) => void;
 }
 
 export const createReactNodeView = ({
@@ -127,18 +142,20 @@ export const createReactNodeView = ({
   view,
   getPos,
   decorations,
-  component,
-  onCreatePortal
+  portalContext,
+  component
 }: TCreateReactNodeView) => {
   const reactNodeView = new ReactNodeView(
     node,
     view,
     getPos,
     decorations,
-    component
+    component,
+    portalContext
   );
   const { nodeView, portal } = reactNodeView.init();
-  onCreatePortal(portal);
+  const { createPortal } = portalContext;
+  createPortal(portal);
 
   return nodeView;
 };

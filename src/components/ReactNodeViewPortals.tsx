@@ -4,9 +4,11 @@ interface Props {}
 
 const initialState = {};
 const ReactNodeViewPortalsContext = React.createContext<{
+  destroyPortal: (portal: any) => void;
   createPortal: (portal: any) => void;
   state: Partial<State>;
 }>({
+  destroyPortal: () => {},
   createPortal: () => {},
   state: {}
 });
@@ -17,6 +19,9 @@ const ReactNodeViewPortalsProvider: React.FC<Props> = ({ children }) => {
   return (
     <ReactNodeViewPortalsContext.Provider
       value={{
+        destroyPortal: (portal: any) => {
+          return dispatch({ type: "destroyPortal", key: portal.key! });
+        },
         createPortal: (portal: any) => {
           return dispatch({ type: "createPortal", key: portal.key!, portal });
         },
@@ -33,11 +38,16 @@ type State = {
   [key: string]: any;
 };
 
-type Action = {
-  type: "createPortal";
-  key: ReactText;
-  portal: any;
-};
+type Action =
+  | {
+      type: "createPortal";
+      key: ReactText;
+      portal: any;
+    }
+  | {
+      type: "destroyPortal";
+      key: ReactText;
+    };
 
 function reducer(state: State, action: Action) {
   switch (action.type) {
@@ -48,6 +58,9 @@ function reducer(state: State, action: Action) {
           portal: action.portal
         }
       };
+    case "destroyPortal":
+      const { [action.key]: omit, ...updatedState } = state;
+      return updatedState;
     default:
       return state;
   }

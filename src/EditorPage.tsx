@@ -8,12 +8,21 @@ const initialValue = {
   type: "doc",
   content: [
     {
+      type: "paragraph",
+      content: [
+        {
+          type: "text",
+          text: " "
+        }
+      ]
+    },
+    {
       type: "image",
       attrs: {
-        alt: "Toilet paper",
-        title: "Unsplash image of toilet paper",
         src:
-          "https://images.unsplash.com/photo-1584556812952-905ffd0c611a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80"
+          "https://images.unsplash.com/photo-1584556812952-905ffd0c611a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=3300&q=80",
+        alt: "Toilet paper",
+        title: "1 image of toilet paper"
       }
     },
     {
