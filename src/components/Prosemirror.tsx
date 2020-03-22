@@ -1,10 +1,14 @@
 import { Box } from "@chakra-ui/core";
+import { css, Global } from "@emotion/core";
 import { baseKeymap } from "prosemirror-commands";
-import { history, redo, undo } from "prosemirror-history";
+import { dropCursor } from "prosemirror-dropcursor";
+import { gapCursor } from "prosemirror-gapcursor";
+import { history } from "prosemirror-history";
 import { keymap } from "prosemirror-keymap";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { buildKeymap } from "../lib/prosemirror-keymap";
 import { schema } from "../lib/prosemirror-schema";
 import Blockquote from "./Blockquote";
 import CodeBlock from "./CodeBlock";
@@ -40,8 +44,10 @@ const ProseMirror: React.FC<Props> = ({ defaultValue, onChange }) => {
       doc,
       plugins: [
         history(),
-        keymap({ "Mod-z": undo, "Mod-y": redo, "Shift-Mod-z": redo }),
-        keymap(baseKeymap)
+        keymap(buildKeymap(schema)),
+        keymap(baseKeymap),
+        gapCursor(),
+        dropCursor()
       ]
     });
   }, [defaultValue]);
@@ -129,6 +135,16 @@ const ProseMirror: React.FC<Props> = ({ defaultValue, onChange }) => {
 
   return (
     <Box rounded="md" borderColor="gray.100" borderWidth="1px" p={4}>
+      <Global
+        styles={css`
+          .ProseMirror:focus {
+            outline: none;
+          }
+          .ProseMirror-selectednode {
+            border: 1px solid green;
+          }
+        `}
+      />
       <div ref={editorViewRef}></div>
     </Box>
   );

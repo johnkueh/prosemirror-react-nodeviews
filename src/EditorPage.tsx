@@ -105,7 +105,18 @@ const initialValue = {
         }
       ]
     },
-    { type: "blockquote", content: [{ type: "text", text: "A blockquote" }] },
+    {
+      type: "paragraph",
+      content: [{ type: "text", text: " " }]
+    },
+    {
+      type: "blockquote",
+      content: [{ type: "text", text: "A blockquote" }]
+    },
+    {
+      type: "paragraph",
+      content: [{ type: "text", text: " " }]
+    },
     { type: "code_block", content: [{ type: "text", text: "A code block" }] }
   ]
 };

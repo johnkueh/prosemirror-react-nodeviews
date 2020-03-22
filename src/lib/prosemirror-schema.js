@@ -1,3 +1,5 @@
+// From https://github.com/ProseMirror/prosemirror-schema-basic/blob/master/src/schema-basic.js
+
 import { Schema } from "prosemirror-model";
 
 const pDOM = ["p", 0],
@@ -165,6 +167,12 @@ export const marks = {
     parseDOM: [{ tag: "i" }, { tag: "em" }, { style: "font-style=italic" }],
     toDOM() {
       return emDOM;
+    }
+  },
+
+  underline: {
+    toDOM() {
+      return ["span", { style: "text-decoration: underline" }, 0];
     }
   },
 

@@ -112,9 +112,13 @@ class ReactNodeView implements NodeView {
   //   return this.node.isLeaf;
   // }
 
-  // selectNode() {
-  //   return false;
-  // }
+  selectNode() {
+    this.dom?.classList.add("ProseMirror-selectednode");
+  }
+
+  deselectNode() {
+    this.dom?.classList.remove("ProseMirror-selectednode");
+  }
 
   // https://discuss.prosemirror.net/t/draggable-and-nodeviews/955
   stopEvent(e: Event) {
