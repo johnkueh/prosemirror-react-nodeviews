@@ -50,11 +50,15 @@ class ReactNodeView implements NodeView {
   }
 
   init() {
-    this.dom = document.createElement("div");
+    this.dom = this.node.isInline
+      ? document.createElement("span")
+      : document.createElement("div");
     this.dom.classList.add("ProseMirror__dom");
 
     if (!this.node.isLeaf) {
-      this.contentDOM = document.createElement("div");
+      this.contentDOM = this.node.isInline
+        ? document.createElement("span")
+        : document.createElement("div");
       this.contentDOM.classList.add("ProseMirror__contentDOM");
       this.dom.appendChild(this.contentDOM);
     }

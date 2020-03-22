@@ -1,4 +1,4 @@
-import { Box, Button, Image, Input } from "@chakra-ui/core";
+import { Box, Image, Input } from "@chakra-ui/core";
 import React, { useRef, useState } from "react";
 import { useReactNodeView } from "./ReactNodeView";
 
@@ -11,22 +11,7 @@ const ImageBlock: React.FC = () => {
   // console.log(context.node);
 
   return (
-    <Box position="relative">
-      {focused && (
-        <>
-          <Box
-            position="fixed"
-            left={0}
-            top={0}
-            right={0}
-            bottom={0}
-            onClick={() => setFocused(false)}
-          />
-          <Box position="absolute">
-            <Button>Remove</Button>
-          </Box>
-        </>
-      )}
+    <Box as="span" position="relative">
       <Image
         onClick={(e: any) => {
           // e.preventDefault();

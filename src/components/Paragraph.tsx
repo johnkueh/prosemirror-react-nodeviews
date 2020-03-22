@@ -5,7 +5,7 @@ import React from "react";
 const Paragraph: React.FC = ({ children }) => {
   // const context = useReactNodeView();
   // console.log(context);
-  return <Box>{children}</Box>;
+  return <Box as="p">{children}</Box>;
 };
 
 export default Paragraph;

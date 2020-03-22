@@ -8,15 +8,6 @@ const initialValue = {
   type: "doc",
   content: [
     {
-      type: "paragraph",
-      content: [
-        {
-          type: "text",
-          text: " "
-        }
-      ]
-    },
-    {
       type: "image",
       attrs: {
         src:

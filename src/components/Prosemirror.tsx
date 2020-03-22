@@ -1,13 +1,19 @@
 import { Box } from "@chakra-ui/core";
-import { css, Global } from "@emotion/core";
 import { baseKeymap } from "prosemirror-commands";
 import { dropCursor } from "prosemirror-dropcursor";
 import { gapCursor } from "prosemirror-gapcursor";
 import { history } from "prosemirror-history";
 import { keymap } from "prosemirror-keymap";
+import { Schema } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef
+} from "react";
 import { buildKeymap } from "../lib/prosemirror-keymap";
 import { schema } from "../lib/prosemirror-schema";
 import Blockquote from "./Blockquote";
@@ -16,6 +22,8 @@ import Heading from "./Heading";
 // import ImageView from "./ImageView";
 import Image from "./Image";
 import Paragraph from "./Paragraph";
+import ProseMirrorCSS from "./ProseMirrorCSS";
+import ProseMirrorToolbar from "./ProseMirrorToolbar";
 import { createReactNodeView } from "./ReactNodeView";
 import ReactNodeViewPortalsProvider, {
   useReactNodeViewPortals
@@ -25,6 +33,13 @@ interface Props {
   defaultValue: any;
   onChange: any;
 }
+
+const ProseMirrorContext = React.createContext<
+  Partial<{
+    schema: Schema;
+    editorView: EditorView;
+  }>
+>({});
 
 const ProseMirrorWrapper: React.FC<Props> = props => {
   return (
@@ -36,7 +51,8 @@ const ProseMirrorWrapper: React.FC<Props> = props => {
 
 const ProseMirror: React.FC<Props> = ({ defaultValue, onChange }) => {
   const { createPortal, destroyPortal } = useReactNodeViewPortals();
-  const editorViewRef = useRef(null);
+  const editorViewDOMref = useRef(null);
+  const editorViewRef = useRef<any>(null);
 
   const state = useMemo(() => {
     const doc = schema.nodeFromJSON(defaultValue);
@@ -122,32 +138,33 @@ const ProseMirror: React.FC<Props> = ({ defaultValue, onChange }) => {
           view.updateState(newState);
         }
       });
+      editorViewRef.current = view;
     },
     [state, onChangeCallback, createPortalCallback, destroyPortalCallback]
   );
 
   useEffect(() => {
-    const editorViewDOM = editorViewRef.current;
+    const editorViewDOM = editorViewDOMref.current;
     if (editorViewDOM) {
       createEditorView(editorViewDOM);
     }
   }, [createEditorView]);
 
   return (
-    <Box rounded="md" borderColor="gray.100" borderWidth="1px" p={4}>
-      <Global
-        styles={css`
-          .ProseMirror:focus {
-            outline: none;
-          }
-          .ProseMirror-selectednode {
-            border: 1px solid green;
-          }
-        `}
-      />
-      <div ref={editorViewRef}></div>
-    </Box>
+    <ProseMirrorContext.Provider
+      value={{
+        schema,
+        editorView: editorViewRef.current
+      }}
+    >
+      <Box rounded="md" borderColor="gray.100" borderWidth="1px" p={4}>
+        <ProseMirrorCSS />
+        <ProseMirrorToolbar />
+        <div ref={editorViewDOMref} />
+      </Box>
+    </ProseMirrorContext.Provider>
   );
 };
 
+export const useProseMirror = () => useContext(ProseMirrorContext);
 export default ProseMirrorWrapper;

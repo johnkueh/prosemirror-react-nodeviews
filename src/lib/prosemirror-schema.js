@@ -97,6 +97,7 @@ export const nodes = {
       alt: { default: null },
       title: { default: null }
     },
+    atom: true,
     group: "block",
     draggable: true,
     parseDOM: [
