@@ -112,10 +112,6 @@ class ReactNodeView implements NodeView {
     this.contentDOM = undefined;
   }
 
-  // update(node: Node) {
-  //   return this.node.isLeaf;
-  // }
-
   selectNode() {
     this.dom?.classList.add("ProseMirror-selectednode");
   }
@@ -130,8 +126,12 @@ class ReactNodeView implements NodeView {
     return e.type === "mousedown" && !e.type.startsWith("drag");
   }
 
-  ignoreMutation() {
+  update(node: Node) {
     return true;
+  }
+
+  ignoreMutation() {
+    return false;
   }
 }
 

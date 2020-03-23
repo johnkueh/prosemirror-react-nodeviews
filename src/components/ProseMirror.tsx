@@ -134,8 +134,8 @@ const ProseMirror: React.FC<Props> = ({ defaultValue, onChange }) => {
         },
         dispatchTransaction(transaction) {
           const newState = view.state.apply(transaction);
-          onChangeCallback(newState.doc.toJSON());
           view.updateState(newState);
+          onChangeCallback(newState.doc.toJSON());
         }
       });
       editorViewRef.current = view;

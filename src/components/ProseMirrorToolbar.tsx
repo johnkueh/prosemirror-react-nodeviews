@@ -9,6 +9,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toggleMark } from "prosemirror-commands";
+import { MarkType } from "prosemirror-model";
+import { EditorState } from "prosemirror-state";
 import React, { useCallback } from "react";
 import { useProseMirror } from "./ProseMirror";
 
@@ -26,17 +28,17 @@ const ProseMirrorToolbar: React.FC<Props> = () => {
     [schema, editorView]
   );
 
-  console.log(editorView);
-
   return (
     <Flex mb={3}>
       <Flex mr={3}>
         <ToolbarButton
           icon={faBold}
+          active={Boolean(markActive(editorView?.state, schema?.marks.strong))}
           onClick={() => toggleMarkCallback(schema?.marks.strong)}
         />
         <ToolbarButton
           icon={faItalic}
+          active={Boolean(markActive(editorView?.state, schema?.marks.em))}
           onClick={() => toggleMarkCallback(schema?.marks.em)}
         />
         <ToolbarButton
@@ -52,11 +54,13 @@ const ProseMirrorToolbar: React.FC<Props> = () => {
   );
 };
 
-const ToolbarButton: React.FC<{ icon: IconDefinition } & Partial<
-  ButtonProps
->> = ({ icon, ...props }) => (
+const ToolbarButton: React.FC<{
+  icon: IconDefinition;
+  active?: boolean;
+} & Partial<ButtonProps>> = ({ active, icon, ...props }) => (
   <Button
     rounded="none"
+    color={active ? "gray.800" : "gray.500"}
     _first={{ roundedTopLeft: "md", roundedBottomLeft: "md" }}
     _last={{ roundedTopRight: "md", roundedBottomRight: "md" }}
     size="xs"
@@ -65,5 +69,13 @@ const ToolbarButton: React.FC<{ icon: IconDefinition } & Partial<
     <FontAwesomeIcon icon={icon} />
   </Button>
 );
+
+function markActive(state?: EditorState, type?: MarkType) {
+  if (state != null && type != null) {
+    let { from, $from, to, empty } = state.selection;
+    if (empty) return type.isInSet(state.storedMarks || $from.marks());
+    else return state.doc.rangeHasMark(from, to, type);
+  }
+}
 
 export default ProseMirrorToolbar;
