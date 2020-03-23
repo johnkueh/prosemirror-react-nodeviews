@@ -1,7 +1,6 @@
 import { Button, ButtonProps, Flex } from "@chakra-ui/core";
 import {
   faBold,
-  faHeading,
   faItalic,
   faLink,
   faUnderline,
@@ -13,6 +12,7 @@ import { MarkType } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
 import React, { useCallback } from "react";
 import { useProseMirror } from "./ProseMirror";
+import HeadingButton from "./ProseMirrorToolbar/HeadingButton";
 
 interface Props {}
 
@@ -43,18 +43,25 @@ const ProseMirrorToolbar: React.FC<Props> = () => {
         />
         <ToolbarButton
           icon={faUnderline}
+          active={Boolean(
+            markActive(editorView?.state, schema?.marks.underline)
+          )}
           onClick={() => toggleMarkCallback(schema?.marks.underline)}
         />
-        <ToolbarButton icon={faLink} onClick={() => {}} />
+        <ToolbarButton
+          icon={faLink}
+          active={Boolean(markActive(editorView?.state, schema?.marks.link))}
+          onClick={() => {}}
+        />
       </Flex>
       <Flex mr={3}>
-        <ToolbarButton icon={faHeading} onClick={() => {}} />
+        <HeadingButton />
       </Flex>
     </Flex>
   );
 };
 
-const ToolbarButton: React.FC<{
+export const ToolbarButton: React.FC<{
   icon: IconDefinition;
   active?: boolean;
 } & Partial<ButtonProps>> = ({ active, icon, ...props }) => (
@@ -70,7 +77,7 @@ const ToolbarButton: React.FC<{
   </Button>
 );
 
-function markActive(state?: EditorState, type?: MarkType) {
+export function markActive(state?: EditorState, type?: MarkType) {
   if (state != null && type != null) {
     let { from, $from, to, empty } = state.selection;
     if (empty) return type.isInSet(state.storedMarks || $from.marks());
