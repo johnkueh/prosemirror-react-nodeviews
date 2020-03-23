@@ -8,7 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { toggleMark } from "prosemirror-commands";
-import { MarkType } from "prosemirror-model";
+import { MarkType, NodeType } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
 import React, { useCallback } from "react";
 import { useProseMirror } from "./ProseMirror";
@@ -82,6 +82,13 @@ export function markActive(state?: EditorState, type?: MarkType) {
     let { from, $from, to, empty } = state.selection;
     if (empty) return type.isInSet(state.storedMarks || $from.marks());
     else return state.doc.rangeHasMark(from, to, type);
+  }
+}
+
+export function nodeActive(state?: EditorState, type?: NodeType, attrs?: any) {
+  if (state != null && type != null) {
+    let { $from, to } = state.selection;
+    return to <= $from.end() && $from.parent.hasMarkup(type, attrs);
   }
 }
 

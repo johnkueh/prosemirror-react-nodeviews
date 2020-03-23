@@ -3,6 +3,7 @@ import { Decoration, EditorView, NodeView } from "prosemirror-view";
 import React, { useContext, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 import shortid from "shortid";
+import { getComponent, registerComponent } from "../lib/prosemirror-registry";
 
 interface IReactNodeViewContext {
   node: Node;
@@ -47,9 +48,13 @@ class ReactNodeView implements NodeView {
     this.component = component;
     this.portalContext = portalContext;
     this.componentRef = React.createRef();
+
+    registerComponent(node.type.name, component);
   }
 
   init() {
+    const { createPortal } = this.portalContext;
+
     this.dom = this.node.isInline
       ? document.createElement("span")
       : document.createElement("div");
@@ -64,10 +69,10 @@ class ReactNodeView implements NodeView {
     }
 
     this.portal = this.renderPortal(this.dom);
+    createPortal(this.portal);
 
     return {
-      nodeView: this,
-      portal: this.portal
+      nodeView: this
     };
   }
 
@@ -100,7 +105,13 @@ class ReactNodeView implements NodeView {
       );
     };
 
-    return ReactDOM.createPortal(<Component />, container, shortid.generate());
+    const portal = ReactDOM.createPortal(
+      <Component />,
+      container,
+      shortid.generate()
+    );
+
+    return portal;
   }
 
   destroy() {
@@ -126,7 +137,30 @@ class ReactNodeView implements NodeView {
     return e.type === "mousedown" && !e.type.startsWith("drag");
   }
 
+  setDomAttrs(node: Node, element: HTMLElement) {
+    Object.keys(node.attrs || {}).forEach(attr => {
+      element.setAttribute(attr, node.attrs[attr]);
+    });
+  }
+
   update(node: Node) {
+    // Handle this properly. Refer to
+    // https://bitbucket.org/atlassian/atlaskit-mk-2/src/master/packages/editor/editor-core/src/nodeviews/ReactNodeView.tsx
+
+    if (this.dom && !this.node.sameMarkup(node)) {
+      this.node = node;
+      // this.dom.innerHTML = "";
+
+      this.component = getComponent(node.type.name);
+      const { createPortal, destroyPortal } = this.portalContext;
+      const portal = this.renderPortal(this.dom);
+      createPortal(portal);
+      // if (this.portal) {
+      // destroyPortal(this.portal);
+      // this.portal = portal;
+      // }
+    }
+
     return true;
   }
 
@@ -161,9 +195,7 @@ export const createReactNodeView = ({
     component,
     portalContext
   );
-  const { nodeView, portal } = reactNodeView.init();
-  const { createPortal } = portalContext;
-  createPortal(portal);
+  const { nodeView } = reactNodeView.init();
 
   return nodeView;
 };
