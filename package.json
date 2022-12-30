@@ -30,7 +30,7 @@
     "prosemirror-view": "^1.14.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.0",
+    "react-scripts": "5.0.1",
     "shortid": "^2.2.15",
     "typescript": "~3.8.0"
   },
